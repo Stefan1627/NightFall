@@ -1,0 +1,4 @@
+package com.nightfall.domain.usecase.auth
+
+class RegisterUseCase {
+}
