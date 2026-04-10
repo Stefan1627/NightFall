@@ -9,12 +9,12 @@
 
 ## Team Assignment Legend
 
-| Label | Role |
-|---|---|
-| **DEV-A** | Auth, Session & User management |
-| **DEV-B** | Lobby system & Firebase sync infrastructure |
-| **DEV-C** | Game engine, state machine & role engine |
-| **DEV-D** | UI/UX, Navigation, Compose screens |
+| Label                           | Role                                        |
+|---------------------------------|---------------------------------------------|
+| **Sarca Denis-Dumitru**         | Auth, Session & User management             |
+| **Istrate Camelia-Elena**       | Lobby system & Firebase sync infrastructure |
+| **Ogrzeanu Alexandru Valentin** | Game engine, state machine & role engine    |
+| **Calmac Stefan**               | UI/UX, Navigation, Compose screens          |
 
 ---
 
@@ -25,7 +25,7 @@
 
 ---
 
-## DEV-A — Auth & User Infrastructure
+## Sarca Denis-Dumitru — Auth & User Infrastructure
 
 ### TASK-A1 · Bootstrap Application class
 **File:** `com/nightfall/App.kt`  
@@ -107,7 +107,7 @@ Use `viewModelScope.launch` for all async calls.
 
 ---
 
-## DEV-B — Firebase Infrastructure & Lobby Backend
+## Istrate Camelia-Elena — Firebase Infrastructure & Lobby Backend
 
 ### TASK-B1 · Domain models — Lobby & Player
 **Files:** `com/nightfall/domain/model/Lobby.kt`, `com/nightfall/domain/model/Player.kt`  
@@ -197,7 +197,7 @@ Start observing lobby and players in `init {}` block after join/create.
 
 ---
 
-## DEV-C — Domain Use Cases & Result wrapper
+## Ogrezeanu Alexandru Valentin — Domain Use Cases & Result wrapper
 
 ### TASK-C1 · Result sealed class
 **File:** `com/nightfall/core/result/Result.kt`  
@@ -263,7 +263,7 @@ object Constants {
 
 ---
 
-## DEV-D — Navigation & Base UI Shell
+## Calmac Stefan — Navigation & Base UI Shell
 
 ### TASK-D1 · Screen sealed class
 **File:** `com/nightfall/ui/nav/Screen.kt`  
@@ -290,7 +290,7 @@ sealed class Screen(val route: String) {
 ### TASK-D2 · NavGraph
 **File:** `com/nightfall/ui/nav/NavGraph.kt`  
 **Description:** Set up `NavHost` with `rememberNavController()`. Wire all `composable(Screen.X.route)` entries. Handle the auth gate: if `SessionManager.isSessionActive()` is false, always navigate to `Screen.Login`; otherwise to `Screen.Home`. Pass `navController` to each screen.  
-**Acceptance:** Deep link to `Screen.Home` without auth redirects to login. After login, back button does not return to login screen.
+**Acceptance:** Deep link to `Screen.Home` without auth redirects to log in. After login, back button does not return to log in screen.
 
 ---
 
@@ -307,7 +307,7 @@ sealed class Screen(val route: String) {
 `RegisterScreen`:
 - Display name, email, password fields
 - "Register" button — calls `authViewModel.register(...)`
-- Navigate back to Login on success
+- Navigate back to Log in on success
 
 All UI built with Jetpack Compose + Material 3.  
 **Acceptance:** Full auth flow works on a real device: register → login → land on HomeScreen.
@@ -323,7 +323,7 @@ All UI built with Jetpack Compose + Material 3.
 - Two primary action buttons: "Create Lobby" and "Join Lobby" (with a lobby code input field)
 - "Logout" icon in top bar
 
-**Acceptance:** User name renders correctly; logout navigates back to LoginScreen.
+**Acceptance:** Username renders correctly; logout navigates back to LoginScreen.
 
 ---
 
@@ -331,7 +331,7 @@ All UI built with Jetpack Compose + Material 3.
 **Files:** `com/nightfall/ui/theme/Color.kt`, `Theme.kt`, `Type.kt`  
 **Description:** Replace the default Material purple palette with a dark, atmospheric night theme:
 - Primary: deep navy `#1A1A2E`
-- Secondary: blood red / dark crimson `#8B0000`
+- Secondary: blood-red / dark crimson `#8B0000`
 - Surface: dark grey `#16213E`
 - On-surface: off-white `#E0E0E0`
 - Accent: moonlight silver `#A8B2C1`
@@ -348,7 +348,7 @@ Disable `dynamicColor` (force the custom palette). Define typography scale with 
 
 ---
 
-## DEV-A — Chat system & User profile
+## Sarca Denis-Dumitru — Chat system & User profile
 
 ### TASK-A9 · Domain model — ChatMessage
 **File:** `com/nightfall/domain/model/ChatMessage.kt`  
@@ -384,7 +384,7 @@ Disable `dynamicColor` (force the custom palette). Define typography scale with 
 
 ---
 
-## DEV-B — Game data layer & Firebase sync for game state
+## Istrate Camelia-Elena — Game data layer & Firebase sync for game state
 
 ### TASK-B9 · Domain models — GameState, Vote, NightAction, GamePhase
 **Files:** `com/nightfall/domain/model/GameState.kt`, `Vote.kt`, `NightAction.kt`, `GamePhase.kt`  
@@ -431,7 +431,7 @@ Disable `dynamicColor` (force the custom palette). Define typography scale with 
 
 ---
 
-## DEV-C — Game Engine & State Machine
+## Ogrezeanu Alexandru Valentin — Game Engine & State Machine
 
 ### TASK-C6 · GamePhase → String serialization helper
 **File:** `com/nightfall/engine/GamePhaseSerializer.kt`  
@@ -496,7 +496,7 @@ interface RoleDefinition {
 - `VillagerRole`: no night action; `faction = "village"`
 - `MafiaRole`: night action eliminates target (`target.isAlive = false`); `faction = "mafia"`
 - `DetectiveRole`: night action reveals target's faction (stored as result in `NightAction.abilityType`); does NOT eliminate
-- `DoctorRole`: night action protects target — sets a `protected` flag; if mafia targets the same player, elimination is cancelled
+- `DoctorRole`: night action protects target — sets a `protected` flag; if mafia targets the same player, elimination is canceled
 
 **Acceptance:** Unit test: `MafiaRole.applyAbility(...)` returns `GameState` where target `isAlive == false`.
 
@@ -513,7 +513,7 @@ interface RoleDefinition {
 
 ---
 
-## DEV-D — Lobby UI screens & Compose components
+## Calmac Stefan — Lobby UI screens & Compose components
 
 ### TASK-D6 · CreateLobbyScreen
 **File:** `com/nightfall/ui/lobby/CreateLobbyScreen.kt`  
@@ -532,7 +532,7 @@ interface RoleDefinition {
 **Description:** Compose screen with:
 - `OutlinedTextField` for lobby code entry
 - "Join" button — calls `lobbyViewModel.joinLobby(code)`
-- Error snackbar: "Lobby full", "Game already started", "Lobby not found"
+- Error snack bar: "Lobby full", "Game already started", "Lobby not found"
 
 **Acceptance:** Correct error message shown for each rejection case.
 
@@ -541,7 +541,7 @@ interface RoleDefinition {
 ### TASK-D8 · LobbyWaitingScreen
 **File:** `com/nightfall/ui/lobby/LobbyWaitingScreen.kt`  
 **Description:** Real-time Compose screen:
-- `LazyColumn` displaying each `Player` with name + online indicator (green dot / grey dot based on `isConnected`)
+- `LazyColumn` displaying each `Player` with name + online indicator (green dot / gray dot based on `isConnected`)
 - Lobby code displayed prominently (copyable)
 - Host sees "Start Game" button (disabled if `players.size < MIN_PLAYERS`), player count badge
 - Non-host sees "Waiting for host to start..."
@@ -572,7 +572,7 @@ interface RoleDefinition {
 
 ---
 
-## DEV-A — Chat UI & in-game communication
+## Sarca Denis-Dumitru — Chat UI & in-game communication
 
 ### TASK-A13 · DayPhaseScreen — chat integration
 **File:** `com/nightfall/ui/game/DayPhaseScreen.kt`  
@@ -611,7 +611,7 @@ interface RoleDefinition {
 **File:** `com/nightfall/ui/game/EliminationScreen.kt`  
 **Description:**
 - Display eliminated player name and role reveal animation (simple fade-in card flip)
-- If tie: show "No one was eliminated this round" message
+- If tied: show "No one was eliminated this round" message
 - "Continue" button (host only) or auto-advance after 5 seconds
 - Shows round number
 
@@ -619,7 +619,7 @@ interface RoleDefinition {
 
 ---
 
-## DEV-B — GameViewModel & full state machine orchestration
+## Istrate Camelia-Elena — GameViewModel & full state machine orchestration
 
 ### TASK-B13 · GameStateMachine
 **File:** `com/nightfall/engine/GameStateMachine.kt`  
@@ -715,7 +715,7 @@ In `init {}`: start observing `gameState`, `players`, `chatMessages` from Fireba
 
 ---
 
-## DEV-C — Night phase UI & EndGame screen
+## Ogrezeanu Alexandru Valentin — Night phase UI & EndGame screen
 
 ### TASK-C13 · NightPhaseScreen
 **File:** `com/nightfall/ui/game/NightPhaseScreen.kt`  
@@ -760,7 +760,7 @@ The migration logic (finding next host) runs on the remaining clients observing 
 
 ---
 
-## DEV-D — Game screens integration & final polish
+## Calmac Stefan — Game screens integration & final polish
 
 ### TASK-D11 · GameViewModel integration into screens
 **File:** All game screens  
@@ -773,7 +773,7 @@ The migration logic (finding next host) runs on the remaining clients observing 
 **File:** `com/nightfall/ui/component/LoadingOverlay.kt`  
 **Description:**
 - `@Composable fun LoadingOverlay(isVisible: Boolean)` — semi-transparent dark overlay with `CircularProgressIndicator`
-- `@Composable fun ErrorSnackbar(message: String?, onDismiss: () -> Unit)` — standard snackbar, auto-dismisses after 4 seconds
+- `@Composable fun ErrorSnackbar(message: String?, onDismiss: () -> Unit)` — standard snack bar, auto-dismisses after 4 seconds
 
 Apply these consistently across all screens where async operations occur.  
 **Acceptance:** All loading states across the app use `LoadingOverlay`; no screen blocks UI without visual feedback.
@@ -812,11 +812,11 @@ Document any bugs found as issues. Fix any critical blockers.
 
 ## Summary Table
 
-| Sprint | DEV-A | DEV-B | DEV-C | DEV-D |
-|---|---|---|---|---|
-| Sprint 1 | App init, Auth (Firebase Auth, repo, VM, session) | Firebase infra, Lobby backend, NetworkMonitor | Result type, Use cases, Constants, Extensions | Navigation, Login/Register/Home UI, Theme |
-| Sprint 2 | Chat system (DS, repo, use cases), User profile | Game data layer (DS, repo, use cases), game models | State machine components (PhaseManager, VoteManager, WinChecker, Roles) | Lobby UI screens (Create, Join, Waiting), shared components |
-| Sprint 3 | Chat UI (DayPhase), VotingScreen, EliminationScreen | GameViewModel, Night processing, Firebase security rules | NightPhaseScreen, EndGameScreen, RoleBadge, Host migration | Screen integration, Offline UX, Loading states, E2E smoke test |
+| Sprint   | Sarca Denis-Dumitru                                 | Istrate Camelia-Elena                                    | Ogrezeanu Alexandru Valentin                                            | Calmac Stefan                                                  |
+|----------|-----------------------------------------------------|----------------------------------------------------------|-------------------------------------------------------------------------|----------------------------------------------------------------|
+| Sprint 1 | App init, Auth (Firebase Auth, repo, VM, session)   | Firebase infra, Lobby backend, NetworkMonitor            | Result type, Use cases, Constants, Extensions                           | Navigation, Login/Register/Home UI, Theme                      |
+| Sprint 2 | Chat system (DS, repo, use cases), User profile     | Game data layer (DS, repo, use cases), game models       | State machine components (PhaseManager, VoteManager, WinChecker, Roles) | Lobby UI screens (Create, Join, Waiting), shared components    |
+| Sprint 3 | Chat UI (DayPhase), VotingScreen, EliminationScreen | GameViewModel, Night processing, Firebase security rules | NightPhaseScreen, EndGameScreen, RoleBadge, Host migration              | Screen integration, Offline UX, Loading states, E2E smoke test |
 
 ---
 
