@@ -1,6 +1,12 @@
 # NightFall
 aplicație multiplayer Android pentru jocuri de deducție socială, în care mai mulți utilizatori participă sincronizat într-un lobby și într-o sesiune de joc bazată pe stări discrete, cu alternanță automată între fazele de noapte și zi.( a.k.a Mafia :)) ) 
 
+## How to run
+- First of all you need a google-services.json file (ask the owner of the project for it)
+- Open Android Studio Panda 2 or newer
+- Connect your android phone or start an emulator
+- Build and Run
+
 
 A. Evită "Listen on Root"
 Dacă pui un listener pe tot obiectul game_123, de fiecare dată când cineva votează, toți ceilalți 9 jucători vor descărca toată lista de jucători, tot chat-ul și toată starea.
