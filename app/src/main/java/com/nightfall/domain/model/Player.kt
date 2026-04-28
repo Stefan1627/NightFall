@@ -1,4 +1,8 @@
 package com.nightfall.domain.model
 
-class Player {
-}
+data class Player(
+    val userId: String,
+    val displayName: String,
+    val isAlive: Boolean = true,
+    val role: Role? = null
+)
