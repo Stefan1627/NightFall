@@ -57,6 +57,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.firebase.database.ktx)
     // Dependencies remain unchanged
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)

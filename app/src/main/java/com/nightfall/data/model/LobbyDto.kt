@@ -1,4 +1,9 @@
 package com.nightfall.data.model
 
-class LobbyDto {
-}
+data class LobbyDto(
+    val lobbyId: String = "",
+    val hostId: String = "",
+    val gameMode: String = "",
+    val status: String = "",
+    val players: Map<String, PlayerDto> = emptyMap()
+)
