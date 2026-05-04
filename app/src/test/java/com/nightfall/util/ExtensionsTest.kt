@@ -1,7 +1,6 @@
 package com.nightfall.util
 
 import com.nightfall.domain.model.Player
-import com.nightfall.domain.model.Role
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -75,22 +74,19 @@ class ExtensionsTest {
 
     // region mafiaCount
 
-    private val mafiaRole = Role("mafia", "Mafia", isMafia = true, hasNightAction = true)
-    private val villagerRole = Role("villager", "Villager", isMafia = false, hasNightAction = false)
-
     @Test
     fun `mafiaCount returns correct count for mixed roles`() {
         val players = mapOf(
-            "1" to Player("1", "Alice", role = mafiaRole),
-            "2" to Player("2", "Bob", role = villagerRole),
-            "3" to Player("3", "Carol", role = mafiaRole)
+            "1" to Player("1", "Alice", role = "mafia"),
+            "2" to Player("2", "Bob", role = "villager"),
+            "3" to Player("3", "Carol", role = "mafia")
         )
         assertEquals(2, players.mafiaCount())
     }
 
     @Test
     fun `mafiaCount returns zero when no mafia players`() {
-        val players = mapOf("1" to Player("1", "Alice", role = villagerRole))
+        val players = mapOf("1" to Player("1", "Alice", role = "villager"))
         assertEquals(0, players.mafiaCount())
     }
 
@@ -98,7 +94,7 @@ class ExtensionsTest {
     fun `mafiaCount ignores players with no role assigned`() {
         val players = mapOf(
             "1" to Player("1", "Alice"),
-            "2" to Player("2", "Bob", role = mafiaRole)
+            "2" to Player("2", "Bob", role = "mafia")
         )
         assertEquals(1, players.mafiaCount())
     }

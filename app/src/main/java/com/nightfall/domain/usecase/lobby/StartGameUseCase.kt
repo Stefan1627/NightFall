@@ -4,6 +4,7 @@ import com.nightfall.core.result.Result
 import com.nightfall.domain.repo.AuthRepository
 import com.nightfall.domain.repo.LobbyRepository
 import com.nightfall.util.Constants
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class StartGameUseCase @Inject constructor(
@@ -14,11 +15,8 @@ class StartGameUseCase @Inject constructor(
         val user = authRepository.getCurrentUser()
             ?: return Result.Error(IllegalStateException("User not authenticated"))
 
-        val lobby = when (val result = lobbyRepository.getLobby(lobbyId)) {
-            is Result.Success -> result.data
-            is Result.Error -> return result
-            Result.Loading -> return Result.Loading
-        }
+        val lobby = lobbyRepository.observeLobby(lobbyId).first()
+            ?: return Result.Error(NoSuchElementException("Lobby not found"))
 
         if (lobby.hostId != user.uid)
             return Result.Error(IllegalStateException("Only the host can start the game"))

@@ -1,4 +1,6 @@
 package com.nightfall.domain.model
 
-class Vote {
-}
+data class Vote(
+    val voterId: String = "",
+    val targetId: String = ""
+)

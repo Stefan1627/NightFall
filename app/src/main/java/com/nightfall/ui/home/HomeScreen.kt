@@ -19,7 +19,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.R
+import com.nightfall.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.nightfall.ui.auth.AuthViewModel
 import com.nightfall.ui.auth.LoginScreen
 import com.nightfall.ui.auth.SignUpScreen
+import com.nightfall.ui.nav.Navigation
 
 class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

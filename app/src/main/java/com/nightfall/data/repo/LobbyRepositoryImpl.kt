@@ -84,4 +84,13 @@ class LobbyRepositoryImpl @Inject constructor(
             Result.Error(e, e.message)
         }
     }
+
+    override suspend fun updateLobbyStatus(lobbyId: String, status: String): Result<Unit> {
+        return try {
+            lobbyDataSource.updateLobbyStatus(lobbyId, status)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e, e.message)
+        }
+    }
 }

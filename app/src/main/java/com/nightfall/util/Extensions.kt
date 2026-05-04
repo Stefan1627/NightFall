@@ -1,6 +1,7 @@
 package com.nightfall.util
 
 import com.nightfall.domain.model.Player
+import com.nightfall.roles.RoleRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -15,4 +16,6 @@ fun String.isValidEmail(): Boolean = emailRegex.matches(this)
 
 fun Map<String, Player>.aliveCount(): Int = values.count { it.isAlive }
 
-fun Map<String, Player>.mafiaCount(): Int = values.count { it.role?.isMafia == true }
+fun Map<String, Player>.mafiaCount(): Int = values.count {
+    RoleRegistry.roles[it.role]?.faction == "mafia"
+}

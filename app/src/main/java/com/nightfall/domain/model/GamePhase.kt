@@ -1,4 +1,5 @@
 package com.nightfall.domain.model
 
-class GamePhase {
+enum class GamePhase {
+    LOBBY, NIGHT, DAY, VOTING, ELIMINATION, CHECK_WIN, END_GAME
 }

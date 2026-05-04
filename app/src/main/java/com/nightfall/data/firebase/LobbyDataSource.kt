@@ -108,6 +108,13 @@ class LobbyDataSource @Inject constructor(
         hostRef.setValueSuspend(newHostId)
     }
 
+    suspend fun updateLobbyStatus(lobbyId: String, status: String) {
+        val statusRef = firebaseDatabase.getReference(
+            "${FirebasePaths.lobby(lobbyId)}/status"
+        )
+        statusRef.setValueSuspend(status)
+    }
+
     private suspend fun DatabaseReference.setValueSuspend(value: Any?) {
         suspendCancellableCoroutine<Unit> { continuation ->
             setValue(value)

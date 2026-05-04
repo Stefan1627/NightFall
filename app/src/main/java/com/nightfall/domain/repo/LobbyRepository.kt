@@ -13,4 +13,5 @@ interface LobbyRepository {
     fun observePlayers(lobbyId: String): Flow<List<Player>>
     suspend fun setPlayerConnected(lobbyId: String, playerId: String, connected: Boolean): Result<Unit>
     suspend fun migrateHost(lobbyId: String, newHostId: String): Result<Unit>
+    suspend fun updateLobbyStatus(lobbyId: String, status: String): Result<Unit>
 }
