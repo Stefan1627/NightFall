@@ -1,4 +1,8 @@
 package com.nightfall.domain.model
 
-class Role {
-}
+data class Role(
+    val id: String,
+    val name: String,
+    val isMafia: Boolean,
+    val hasNightAction: Boolean
+)
