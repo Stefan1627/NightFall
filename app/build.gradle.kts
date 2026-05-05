@@ -57,7 +57,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.firebase.database.ktx)
     // Dependencies remain unchanged
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.core.ktx)
@@ -88,6 +87,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.database)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.androidx.recyclerview)
 
