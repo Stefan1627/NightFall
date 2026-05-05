@@ -31,10 +31,7 @@ class LobbyRepositoryImpl @Inject constructor(
         return try {
             lobbyDataSource.joinLobby(lobbyId, player.toDto())
 
-            firebaseDatabase
-                .getReference("${FirebasePaths.lobbyPlayer(lobbyId, player.playerId)}/isConnected")
-                .onDisconnect()
-                .setValue(false)
+
 
             Result.Success(Unit)
         } catch (e: Exception) {
