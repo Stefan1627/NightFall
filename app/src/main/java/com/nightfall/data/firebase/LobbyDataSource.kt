@@ -22,12 +22,10 @@ class LobbyDataSource @Inject constructor(
 
     suspend fun createLobby(lobby: LobbyDto): String {
         val lobbiesRef = firebaseDatabase.getReference(FirebasePaths.LOBBIES)
-        val newLobbyRef = lobbiesRef.push()
-        val lobbyId = newLobbyRef.key
-            ?: throw IllegalStateException("Failed to generate lobby ID")
+        val lobbyId = lobby.lobbyId
+        val newLobbyRef = lobbiesRef.child(lobbyId)
 
-        val lobbyToSave = lobby.copy(lobbyId = lobbyId)
-        newLobbyRef.setValueSuspend(lobbyToSave)
+        newLobbyRef.setValueSuspend(lobby)
 
         return lobbyId
     }
@@ -106,6 +104,13 @@ class LobbyDataSource @Inject constructor(
             "${FirebasePaths.lobby(lobbyId)}/hostId"
         )
         hostRef.setValueSuspend(newHostId)
+    }
+
+    suspend fun updatePlayerRole(lobbyId: String, playerId: String, roleId: String) {
+        val roleRef = firebaseDatabase.getReference(
+            "${FirebasePaths.lobbyPlayer(lobbyId, playerId)}/role"
+        )
+        roleRef.setValueSuspend(roleId)
     }
 
     private suspend fun DatabaseReference.setValueSuspend(value: Any?) {

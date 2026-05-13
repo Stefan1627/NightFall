@@ -12,6 +12,6 @@ class LeaveLobbyUseCase @Inject constructor(
     suspend operator fun invoke(lobbyId: String): Result<Unit> {
         val user = authRepository.getCurrentUser()
             ?: return Result.Error(IllegalStateException("User not authenticated"))
-        return lobbyRepository.leaveLobby(lobbyId, user.uid)
+        return lobbyRepository.leaveLobby(lobbyId, user.userId)
     }
 }

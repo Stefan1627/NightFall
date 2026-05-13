@@ -1,4 +1,8 @@
 package com.nightfall.domain.model
 
-class GameState {
-}
+data class GameState(
+    val lobbyId: String = "",
+    val currentPhase: String = "lobby",
+    val round: Int = 0,
+    val winner: String? = null
+)

@@ -1,9 +1,7 @@
 package com.nightfall.di
 
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.nightfall.core.session.SessionManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,7 +18,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFirebaseDatabase(): FirebaseDatabase {
-        return FirebaseDatabase.getInstance()
+        return FirebaseDatabase.getInstance("https://nightfall-3f6aa-default-rtdb.europe-west1.firebasedatabase.app")
     }
 
     @Provides
@@ -29,14 +27,6 @@ object AppModule {
         firebaseDatabase: FirebaseDatabase
     ): DatabaseReference {
         return firebaseDatabase.reference
-    }
-
-    @Provides
-    @Singleton
-    fun provideSessionManager(
-        firebaseAuth: FirebaseAuth
-    ): SessionManager {
-        return SessionManager(firebaseAuth)
     }
 
     @Provides

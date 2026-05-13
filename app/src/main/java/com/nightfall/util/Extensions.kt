@@ -15,4 +15,4 @@ fun String.isValidEmail(): Boolean = emailRegex.matches(this)
 
 fun Map<String, Player>.aliveCount(): Int = values.count { it.isAlive }
 
-fun Map<String, Player>.mafiaCount(): Int = values.count { it.role?.isMafia == true }
+fun Map<String, Player>.mafiaCount(): Int = values.count { it.role == "mafia" }

@@ -1,4 +1,9 @@
 package com.nightfall.domain.model
 
-class NightAction {
-}
+data class NightAction(
+    val actionId: String = "",
+    val gameId: String = "",
+    val actorId: String = "",
+    val targetId: String = "",
+    val abilityType: String = ""
+)

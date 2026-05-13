@@ -1,4 +1,8 @@
 package com.nightfall.data.model
 
-class VoteDto {
-}
+data class VoteDto(
+    val voteId: String = "",
+    val gameId: String = "",
+    val voterId: String = "",
+    val targetId: String = ""
+)

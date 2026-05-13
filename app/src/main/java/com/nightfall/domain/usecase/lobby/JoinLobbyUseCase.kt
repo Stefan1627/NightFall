@@ -17,7 +17,10 @@ class JoinLobbyUseCase @Inject constructor(
 
         val lobby = when (val result = lobbyRepository.getLobby(lobbyId)) {
             is Result.Success -> result.data
-            is Result.Error -> return result
+            is Result.Error -> return Result.Error(
+                IllegalStateException("Lobby not found"),
+                "Lobby not found"
+            )
             Result.Loading -> return Result.Loading
         }
 
@@ -26,7 +29,12 @@ class JoinLobbyUseCase @Inject constructor(
         if (lobby.players.size >= Constants.MAX_PLAYERS)
             return Result.Error(IllegalStateException("Lobby is full"))
 
-        val player = Player(userId = user.uid, displayName = user.displayName)
+        val player = Player(
+            playerId = user.userId,
+            displayName = user.displayName,
+            isAlive = true,
+            isConnected = true
+        )
         return lobbyRepository.joinLobby(lobbyId, player)
     }
 }

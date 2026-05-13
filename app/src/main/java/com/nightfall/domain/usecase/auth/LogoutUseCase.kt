@@ -5,5 +5,12 @@ import com.nightfall.domain.repo.AuthRepository
 import javax.inject.Inject
 
 class LogoutUseCase @Inject constructor(private val repository: AuthRepository) {
-    suspend operator fun invoke(): Result<Unit> = repository.logout()
+    suspend operator fun invoke(): Result<Unit> {
+        return try {
+            repository.logout()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e, e.message)
+        }
+    }
 }

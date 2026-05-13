@@ -1,0 +1,55 @@
+{
+  "rules": {
+    "users": {
+      "$userId": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid == $userId"
+      }
+    },
+    "lobbies": {
+      "$lobbyId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "currentPhase": {
+          ".write": "auth != null && data.parent().child('hostId').val() == auth.uid"
+        }
+      }
+    },
+    "lobby_players": {
+      "$lobbyId": {
+        ".read": "auth != null",
+        "$playerId": {
+          ".write": "auth != null && (auth.uid == $playerId || root.child('lobbies').child($lobbyId).child('hostId').val() == auth.uid)"
+        }
+      }
+    },
+    "games": {
+      "$lobbyId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "votes": {
+      "$gameId": {
+        ".read": "auth != null",
+        "$voteId": {
+          ".write": "auth != null"
+        }
+      }
+    },
+    "night_actions": {
+      "$gameId": {
+        ".read": "auth != null",
+        "$actorId": {
+          ".write": "auth != null && auth.uid == $actorId"
+        }
+      }
+    },
+    "chats": {
+      "$lobbyId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

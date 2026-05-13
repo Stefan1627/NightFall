@@ -15,14 +15,15 @@ class CreateLobbyUseCase @Inject constructor(
     suspend operator fun invoke(gameMode: String = Constants.GAME_MODE_CLASSIC): Result<Lobby> {
         val user = authRepository.getCurrentUser()
             ?: return Result.Error(IllegalStateException("User not authenticated"))
+        val pin = (1000..9999).random().toString()
         val lobby = Lobby(
-            lobbyId = UUID.randomUUID().toString(),
-            hostId = user.uid,
+            lobbyId = pin,
+            hostId = user.userId,
             gameMode = gameMode,
             status = "waiting"
         )
         return when (val result = lobbyRepository.createLobby(lobby)) {
-            is Result.Success -> Result.Success(lobby)
+            is Result.Success -> Result.Success(lobby.copy(lobbyId = result.data))
             is Result.Error -> result
             Result.Loading -> Result.Loading
         }

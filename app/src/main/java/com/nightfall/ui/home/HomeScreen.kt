@@ -1,153 +1,148 @@
 package com.nightfall.ui.home
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.AlertDialog
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.R
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.sp
-import androidx.core.view.WindowCompat
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
-import com.nightfall.ui.auth.AuthViewModel
-import com.nightfall.ui.auth.LoginScreen
-import com.nightfall.ui.auth.SignUpScreen
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.nightfall.ui.theme.NightFallTheme
 
-class HomeScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    onCreateLobby: () -> Unit = {},
+    onJoinLobby: () -> Unit = {},
+    onLogout: () -> Unit = {}
+) {
+    val user by homeViewModel.currentUser.collectAsState()
 
-        setContent {
-            val authVm: AuthViewModel = hiltViewModel()
-            val loggedIn by authVm.isLoggedIn.collectAsStateWithLifecycle()
-
-            var showSignUp by rememberSaveable { mutableStateOf(false) }
-
-            MaterialTheme {
-                if (!loggedIn) {
-                    if (showSignUp) {
-                        SignUpScreen(
-                            onSignInClick = { showSignUp = false }
-                        )
-                    } else {
-                        LoginScreen(
-                            onLoggedIn = {},
-                            onCreateAccount = { showSignUp = true }
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Nightfall",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                actions = {
+                    IconButton(onClick = {
+                        homeViewModel.logout()
+                        onLogout()
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Logout"
                         )
                     }
-                } else {
-
-                    MainScreen(
-                        onConfirmSignOut = {
-                            authVm.signOut()
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun MainScreen(onConfirmSignOut: () -> Unit) {
-        val navController = rememberNavController()
-        var showSignOutDialog by remember { mutableStateOf(false) }
-
-        Scaffold(
-            topBar = {
-                TopBar(
-                    onSignOutClick = { showSignOutDialog = true }
-                )
-            },
-            containerColor = colorResource(R.color.splash_color),
-            contentWindowInsets = WindowInsets.systemBars
-        ) { padding ->
-            Box(
-                modifier = Modifier
-                    .padding(padding)
-                    .windowInsetsPadding(WindowInsets.systemBars)
-            ) {
-                Navigation(navController = navController)
-            }
-        }
-
-        if (showSignOutDialog) {
-            SignOutDialog(
-                onConfirm = {
-                    showSignOutDialog = false
-                    onConfirmSignOut()
                 },
-                onDismiss = { showSignOutDialog = false }
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
             )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Welcome, ${user?.displayName ?: "Player"}",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Ready for the night?",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Button(
+                onClick = onCreateLobby,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(
+                    text = "Create Lobby",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedButton(
+                onClick = onJoinLobby,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "Join Lobby",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
         }
     }
+}
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun TopBar(onSignOutClick: () -> Unit) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.app_name),
-                    fontSize = 18.sp,
-                    color = Color.White
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = colorResource(id = R.color.splash_color),
-                titleContentColor = Color.White,
-                navigationIconContentColor = Color.White,
-                actionIconContentColor = Color.White
-            ),
-            actions = {
-                IconButton(onClick = onSignOutClick) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.sign_out_svg),
-                        contentDescription = "Sign out"
-                    )
-                }
-            }
-        )
-    }
-
-    @Composable
-    fun SignOutDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            title = { Text("Sign Out?") },
-            text = { Text("Do you really want to sign out?") },
-            confirmButton = {
-                TextButton(onClick = onConfirm) { Text("Yes") }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismiss) { Text("Cancel") }
-            }
-        )
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    NightFallTheme {
+        HomeScreen()
     }
 }
