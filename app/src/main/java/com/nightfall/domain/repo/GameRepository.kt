@@ -12,6 +12,7 @@ interface GameRepository {
     suspend fun updatePhase(lobbyId: String, phase: String): Result<Unit>
     suspend fun updateRound(lobbyId: String, round: Int): Result<Unit>
     suspend fun setWinner(lobbyId: String, winner: String): Result<Unit>
+    suspend fun setEliminatedPlayer(lobbyId: String, playerId: String?): Result<Unit>
     suspend fun submitVote(gameId: String, vote: Vote): Result<Unit>
     fun observeVotes(gameId: String): Flow<List<Vote>>
     suspend fun submitNightAction(gameId: String, action: NightAction): Result<Unit>

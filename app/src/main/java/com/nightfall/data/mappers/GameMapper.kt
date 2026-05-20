@@ -38,7 +38,8 @@ fun GameStateDto.toDomain(): GameState {
         lobbyId = lobbyId,
         currentPhase = currentPhase,
         round = round,
-        winner = winner
+        winner = winner,
+        eliminatedPlayerId = eliminatedPlayerId
     )
 }
 
@@ -47,7 +48,8 @@ fun GameState.toDto(): GameStateDto {
         lobbyId = lobbyId,
         currentPhase = currentPhase,
         round = round,
-        winner = winner
+        winner = winner,
+        eliminatedPlayerId = eliminatedPlayerId
     )
 }
 

@@ -113,6 +113,18 @@ class LobbyDataSource @Inject constructor(
         roleRef.setValueSuspend(roleId)
     }
 
+    suspend fun getPlayers(lobbyId: String): List<PlayerDto> {
+        return suspendCancellableCoroutine { continuation ->
+            firebaseDatabase.getReference(FirebasePaths.lobbyPlayers(lobbyId))
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val players = snapshot.children.mapNotNull { it.getValue(PlayerDto::class.java) }
+                    continuation.resume(players)
+                }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
+    }
+
     private suspend fun DatabaseReference.setValueSuspend(value: Any?) {
         suspendCancellableCoroutine<Unit> { continuation ->
             setValue(value)

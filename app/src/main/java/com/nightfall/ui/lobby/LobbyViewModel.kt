@@ -46,6 +46,9 @@ class LobbyViewModel @Inject constructor(
     private val _currentLobbyId = MutableStateFlow<String?>(null)
     val currentLobbyId: StateFlow<String?> = _currentLobbyId.asStateFlow()
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
     private var observeLobbyJob: Job? = null
     private var observePlayersJob: Job? = null
 
@@ -130,8 +133,16 @@ class LobbyViewModel @Inject constructor(
     fun startGame() {
         val lobbyId = _currentLobbyId.value ?: return
         viewModelScope.launch {
-            startGameUseCase(lobbyId)
+            when (val result = startGameUseCase(lobbyId)) {
+                is Result.Error -> _errorMessage.value =
+                    result.message ?: result.exception.message ?: "Failed to start game"
+                else -> { /* Success — navigation triggered by LaunchedEffect watching lobby status */ }
+            }
         }
+    }
+
+    fun clearError() {
+        _errorMessage.value = null
     }
 
     override fun onCleared() {

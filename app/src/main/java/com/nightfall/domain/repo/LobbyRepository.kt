@@ -16,4 +16,5 @@ interface LobbyRepository {
     suspend fun migrateHost(lobbyId: String, newHostId: String): Result<Unit>
     suspend fun updateLobbyStatus(lobbyId: String, status: String): Result<Unit>
     suspend fun updatePlayerRole(lobbyId: String, playerId: String, roleId: String): Result<Unit>
+    suspend fun getPlayers(lobbyId: String): Result<List<Player>>
 }

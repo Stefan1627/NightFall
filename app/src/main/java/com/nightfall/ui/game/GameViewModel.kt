@@ -24,15 +24,14 @@ import com.nightfall.engine.GameEvent
 import com.nightfall.engine.GamePhaseSerializer
 import com.nightfall.engine.GameStateMachine
 import com.nightfall.engine.PhaseManager
-import com.nightfall.engine.RoleDistributor
 import com.nightfall.engine.VoteManager
 import com.nightfall.engine.WinConditionChecker
-import com.nightfall.engine.GameOutcome
 import com.nightfall.roles.RoleDefinition
 import com.nightfall.roles.RoleRegistry
 import com.nightfall.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,7 +47,6 @@ class GameViewModel @Inject constructor(
     private val phaseManager: PhaseManager,
     private val voteManager: VoteManager,
     private val winConditionChecker: WinConditionChecker,
-    private val roleDistributor: RoleDistributor,
     private val observeGameStateUseCase: ObserveGameStateUseCase,
     private val submitVoteUseCase: SubmitVoteUseCase,
     private val submitNightActionUseCase: SubmitNightActionUseCase,
@@ -120,6 +118,7 @@ class GameViewModel @Inject constructor(
             observeGameStateUseCase(lobbyId).collect { state ->
                 if (state != null) {
                     _gameState.value = state
+                    _eliminatedPlayerId.value = state.eliminatedPlayerId
                     val phase = GamePhaseSerializer.deserialize(state.currentPhase)
                     val previousPhase = _currentPhase.value
                     _currentPhase.value = phase
@@ -192,6 +191,15 @@ class GameViewModel @Inject constructor(
                     }
                 }
             )
+        }
+
+        // CheckWin is a transient server-side phase — host auto-advances after a short delay
+        // so Firebase player state (isAlive updates) has time to propagate before checking
+        if (phase is GamePhase.CheckWin && isHost) {
+            viewModelScope.launch {
+                delay(800)
+                advancePhase()
+            }
         }
     }
 
@@ -270,20 +278,7 @@ class GameViewModel @Inject constructor(
                         GameEvent.NoWinnerFound
                     }
                 }
-                is GamePhase.Lobby -> {
-                    // Assign roles when starting the game
-                    val roleMap = roleDistributor.distribute(
-                        _players.value,
-                        _gameMode.value ?: Constants.GAME_MODE_CLASSIC
-                    )
-                    
-                    // Update all players in Firebase with their new roles
-                    roleMap.forEach { (playerId, roleId) ->
-                        lobbyRepository.updatePlayerRole(lobbyId, playerId, roleId)
-                    }
-                    
-                    GameEvent.StartGame
-                }
+                is GamePhase.Lobby -> GameEvent.StartGame
                 else -> return@launch
             }
 
@@ -298,13 +293,14 @@ class GameViewModel @Inject constructor(
             }
             if (nextPhase is GamePhase.Night) {
                 gameRepository.clearVotes(lobbyId)
+                gameRepository.setEliminatedPlayer(lobbyId, null)
             }
         }
     }
 
     private suspend fun processVoteResults() {
         val eliminatedId = voteManager.tally(_votes.value)
-        _eliminatedPlayerId.value = eliminatedId
+        gameRepository.setEliminatedPlayer(lobbyId, eliminatedId)
         if (eliminatedId != null) {
             gameRepository.updatePlayerAlive(lobbyId, eliminatedId, false)
         }
@@ -350,6 +346,24 @@ class GameViewModel @Inject constructor(
 
     fun dismissRoleReveal() {
         _roleRevealShown.value = true
+    }
+
+    fun resetGame(onComplete: () -> Unit) {
+        if (!isHost) return
+        viewModelScope.launch {
+            gameRepository.updatePhase(lobbyId, GamePhaseSerializer.serialize(GamePhase.Lobby))
+            gameRepository.updateRound(lobbyId, 1)
+            gameRepository.clearVotes(lobbyId)
+            gameRepository.clearNightActions(lobbyId)
+
+            _players.value.forEach { player ->
+                gameRepository.updatePlayerAlive(lobbyId, player.playerId, true)
+                gameRepository.updatePlayerRole(lobbyId, player.playerId, "")
+            }
+
+            lobbyRepository.updateLobbyStatus(lobbyId, "waiting")
+            onComplete()
+        }
     }
 
     fun getPhaseDurationMs(): Long {

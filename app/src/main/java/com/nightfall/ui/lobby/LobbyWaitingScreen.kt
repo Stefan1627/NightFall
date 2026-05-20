@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nightfall.domain.model.Player
+import com.nightfall.ui.component.ErrorSnackbar
 import com.nightfall.ui.component.PlayerCard
 import com.nightfall.ui.theme.NightFallTheme
 import com.nightfall.util.Constants
@@ -53,6 +54,7 @@ fun LobbyWaitingScreen(
 ) {
     val lobbyState by lobbyViewModel.lobbyState.collectAsState()
     val players by lobbyViewModel.players.collectAsState()
+    val errorMessage by lobbyViewModel.errorMessage.collectAsState()
     val clipboardManager = LocalClipboardManager.current
 
     val lobby = (lobbyState as? LobbyUiState.Active)?.lobby
@@ -71,7 +73,13 @@ fun LobbyWaitingScreen(
     }
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = {
+            ErrorSnackbar(
+                message = errorMessage,
+                onDismiss = { lobbyViewModel.clearError() }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier

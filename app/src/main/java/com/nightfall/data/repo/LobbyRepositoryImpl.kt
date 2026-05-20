@@ -137,4 +137,13 @@ class LobbyRepositoryImpl @Inject constructor(
             Result.Error(e, e.message)
         }
     }
+
+    override suspend fun getPlayers(lobbyId: String): Result<List<Player>> {
+        return try {
+            val players = lobbyDataSource.getPlayers(lobbyId).map { it.toDomain() }
+            Result.Success(players)
+        } catch (e: Exception) {
+            Result.Error(e, e.message)
+        }
+    }
 }

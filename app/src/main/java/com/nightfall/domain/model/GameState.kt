@@ -4,5 +4,6 @@ data class GameState(
     val lobbyId: String = "",
     val currentPhase: String = "lobby",
     val round: Int = 0,
-    val winner: String? = null
+    val winner: String? = null,
+    val eliminatedPlayerId: String? = null
 )

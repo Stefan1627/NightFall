@@ -60,6 +60,15 @@ class GameRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun setEliminatedPlayer(lobbyId: String, playerId: String?): Result<Unit> {
+        return try {
+            gameDataSource.setEliminatedPlayer(lobbyId, playerId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e, e.message)
+        }
+    }
+
     override suspend fun submitVote(gameId: String, vote: Vote): Result<Unit> {
         return try {
             gameDataSource.submitVote(gameId, vote.toDto())

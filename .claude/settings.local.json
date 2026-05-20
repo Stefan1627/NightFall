@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(where.exe java 2>&1; $env:PATH -split \";\" | Where-Object { $_ -match \"java|jdk|jre\" })"
+    ]
+  }
+}

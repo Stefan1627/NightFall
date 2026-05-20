@@ -107,6 +107,7 @@ fun NightfallNavGraph(
             route = Screen.Game.route,
             arguments = listOf(navArgument("lobbyId") { type = NavType.StringType })
         ) { backStackEntry ->
+            val lobbyId = backStackEntry.arguments?.getString("lobbyId") ?: ""
             val gameVm: GameViewModel = hiltViewModel()
             val phase by gameVm.currentPhase.collectAsState()
 
@@ -114,10 +115,17 @@ fun NightfallNavGraph(
                 is GamePhase.Night -> NightPhaseScreen(gameVm)
                 is GamePhase.Day -> DayPhaseScreen(gameVm)
                 is GamePhase.Voting -> VotingScreen(gameVm)
-                is GamePhase.Elimination -> EliminationScreen(gameVm)
+                is GamePhase.Elimination,
+                is GamePhase.CheckWin -> EliminationScreen(gameVm)
                 is GamePhase.EndGame -> EndGameScreen(
                     gameVm,
-                    onPlayAgain = { /* Reset lobby */ },
+                    onPlayAgain = {
+                        gameVm.resetGame {
+                            navController.navigate(Screen.LobbyWaiting.createRoute(lobbyId)) {
+                                popUpTo(Screen.Home.route)
+                            }
+                        }
+                    },
                     onLeave = {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(0) { inclusive = true }

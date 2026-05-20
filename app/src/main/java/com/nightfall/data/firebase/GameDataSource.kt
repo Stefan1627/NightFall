@@ -76,6 +76,15 @@ class GameDataSource @Inject constructor(
         }
     }
 
+    suspend fun setEliminatedPlayer(lobbyId: String, playerId: String?) {
+        val ref = firebaseDatabase.getReference("${FirebasePaths.game(lobbyId)}/eliminatedPlayerId")
+        suspendCancellableCoroutine<Unit> { continuation ->
+            ref.setValue(playerId)
+                .addOnSuccessListener { continuation.resume(Unit) }
+                .addOnFailureListener { continuation.resumeWithException(it) }
+        }
+    }
+
     suspend fun submitVote(gameId: String, vote: VoteDto) {
         val voteRef = firebaseDatabase.getReference(
             FirebasePaths.vote(gameId, vote.voteId)
